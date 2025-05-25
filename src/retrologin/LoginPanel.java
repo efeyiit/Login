@@ -17,11 +17,11 @@ public class LoginPanel extends JPanel {
     private JCheckBox showPasswordCheckBox;
     private JButton loginButton;
     private JButton registerButton;
-    private JLabel feedbackLabel; // Label for feedback messages
+    private JLabel feedbackLabel; 
     private JLabel captchaQuestionLabel;
     private JTextField captchaAnswerField;
 
-    // Password criteria labels
+    // sifre kriter seyleri
     private JLabel lengthCriteriaLabel;
     private JLabel uppercaseCriteriaLabel;
     private JLabel lowercaseCriteriaLabel;
@@ -30,7 +30,7 @@ public class LoginPanel extends JPanel {
     private JLabel passwordStrengthLabel;
 
     private String currentCaptchaAnswer;
-    private HashMap<String, String> users = new HashMap<>(); // HashMap to store users
+    private HashMap<String, String> users = new HashMap<>(); 
 
     private Font retroFontSmall;
     private Font retroFontMedium;
@@ -45,23 +45,23 @@ public class LoginPanel extends JPanel {
     private Random random = new Random();
 
     private MainFrame mainFrame;
-    private JLabel animatedTitleLabel; // JLabel for the animated title
+    private JLabel animatedTitleLabel; 
 
     public LoginPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
-        // Load fonts
+        // font yukluo
         retroFontSmall = RetroArcadeFontLoader.loadPixelFont(16f);
         retroFontMedium = RetroArcadeFontLoader.loadPixelFont(24f);
         retroFontLarge = RetroArcadeFontLoader.loadPixelFont(36f);
         retroFontTitle = RetroArcadeFontLoader.loadPixelFont(48f);
 
-        // Default users
+        // denemek icin varolan hesaplar
         users.put("testuser", "Password123!");
         users.put("admin", "Admin123$");
         users.put("newuser", "Pass123!");
 
-        // Load background GIF
+        // arkaplan resmini yukluo
         try {
             backgroundGif = new ImageIcon("retro_background.gif");
             if (backgroundGif.getIconWidth() == -1 || backgroundGif.getIconHeight() == -1) {
@@ -73,67 +73,66 @@ public class LoginPanel extends JPanel {
             backgroundGif = null;
         }
 
-        setupUI(); // Set up the UI
-        setupAnimation(); // Set up the animation
+        setupUI(); 
+        setupAnimation(); 
     }
 
     private void setupUI() {
         setLayout(new GridBagLayout());
-        setBackground(Color.BLACK); // Default background color if GIF fails
+        setBackground(Color.BLACK); // calismazsa gif siyah olsun die
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 10, 6, 10); // General padding
 
-        // --- Title (Animated) ---
+        // dans eden harfler baslik iicn
         animatedTitleLabel = new JLabel(titleText) {
             @Override
             protected void paintComponent(Graphics g) {
-                // This JLabel only holds space in GridBagLayout.
-                // Actual drawing is done in the panel's paintComponent method.
+               
             }
         };
         animatedTitleLabel.setFont(retroFontTitle);
-        animatedTitleLabel.setForeground(Color.WHITE); // Placeholder as it's animated
+        animatedTitleLabel.setForeground(Color.WHITE); 
         animatedTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2; // Span two columns
-        gbc.weighty = 0.2; // Vertical space at the top
-        gbc.anchor = GridBagConstraints.CENTER; // Center horizontally
+        gbc.gridwidth = 2; 
+        gbc.weighty = 0.2; 
+        gbc.anchor = GridBagConstraints.CENTER; 
         add(animatedTitleLabel, gbc);
 
-        // --- Username ---
+        // username kismi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.WEST; // Align left
+        gbc.anchor = GridBagConstraints.WEST; 
         JLabel usernameLabel = new JLabel("USERNAME:");
         usernameLabel.setFont(retroFontMedium);
-        usernameLabel.setForeground(new Color(255, 255, 0)); // Yellowish
+        usernameLabel.setForeground(new Color(255, 255, 0)); 
         usernameLabel.setOpaque(true);
-        usernameLabel.setBackground(new Color(0, 0, 0, 180)); // Semi-transparent black
+        usernameLabel.setBackground(new Color(0, 0, 0, 180)); 
         add(usernameLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST; // Align right
+        gbc.anchor = GridBagConstraints.EAST; 
         usernameField = new JTextField(15);
         usernameField.setFont(retroFontSmall);
         usernameField.setBackground(new Color(50, 50, 50, 200));
         usernameField.setForeground(Color.CYAN);
-        usernameField.setCaretColor(Color.CYAN); // Caret color
+        usernameField.setCaretColor(Color.CYAN); 
         usernameField.setBorder(BorderFactory.createLineBorder(Color.CYAN.darker(), 2));
         add(usernameField, gbc);
 
-        // --- Password ---
+        // sifre kismi
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
         JLabel passwordLabel = new JLabel("PASSWORD:");
         passwordLabel.setFont(retroFontMedium);
-        passwordLabel.setForeground(new Color(0, 255, 255)); // Cyan-greenish
+        passwordLabel.setForeground(new Color(0, 255, 255)); 
         passwordLabel.setOpaque(true);
         passwordLabel.setBackground(new Color(0, 0, 0, 180));
         add(passwordLabel, gbc);
@@ -149,7 +148,7 @@ public class LoginPanel extends JPanel {
         passwordField.setBorder(BorderFactory.createLineBorder(Color.CYAN.darker(), 2));
         add(passwordField, gbc);
 
-        // --- Show Password CheckBox ---
+        // sifre gostermesi icin kutucuk 
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
@@ -160,16 +159,16 @@ public class LoginPanel extends JPanel {
         showPasswordCheckBox.setBackground(new Color(0, 0, 0, 180));
         add(showPasswordCheckBox, gbc);
 
-        // --- Password Strength Criteria ---
+        // sifre guclu orta zayif gosterge
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(2, 10, 2, 10); // Less vertical padding
+        gbc.insets = new Insets(2, 10, 2, 10); 
 
         lengthCriteriaLabel = new JLabel("• Min 8 Characters");
         lengthCriteriaLabel.setFont(retroFontSmall);
         lengthCriteriaLabel.setForeground(Color.GRAY);
         lengthCriteriaLabel.setOpaque(true);
-        lengthCriteriaLabel.setBackground(new Color(0, 0, 0, 150)); // Semi-transparent black
+        lengthCriteriaLabel.setBackground(new Color(0, 0, 0, 150)); 
         gbc.gridx = 0;
         gbc.gridy = 4;
         add(lengthCriteriaLabel, gbc);
@@ -206,7 +205,7 @@ public class LoginPanel extends JPanel {
         gbc.gridy = 8;
         add(specialCharCriteriaLabel, gbc);
 
-        gbc.insets = new Insets(8, 10, 8, 10); // Restore normal padding
+        gbc.insets = new Insets(8, 10, 8, 10); 
         passwordStrengthLabel = new JLabel("Password Strength: N/A");
         passwordStrengthLabel.setFont(retroFontMedium);
         passwordStrengthLabel.setForeground(Color.WHITE);
@@ -216,7 +215,7 @@ public class LoginPanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         add(passwordStrengthLabel, gbc);
 
-        // --- CAPTCHA ---
+        // captha kismi
         gbc.gridy = 10;
         captchaQuestionLabel = new JLabel();
         captchaQuestionLabel.setFont(retroFontMedium);
@@ -224,7 +223,7 @@ public class LoginPanel extends JPanel {
         captchaQuestionLabel.setOpaque(true);
         captchaQuestionLabel.setBackground(new Color(0, 0, 0, 180));
         add(captchaQuestionLabel, gbc);
-        generateCaptcha(); // Generate initial CAPTCHA
+        generateCaptcha(); 
 
         gbc.gridy = 11;
         captchaAnswerField = new JTextField(10);
@@ -235,43 +234,43 @@ public class LoginPanel extends JPanel {
         captchaAnswerField.setBorder(BorderFactory.createLineBorder(Color.CYAN.darker(), 2));
         add(captchaAnswerField, gbc);
 
-        // --- Buttons ---
+        // login register buton kismi
         gbc.gridy = 12;
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
         loginButton = new JButton("LOGIN");
         loginButton.setFont(retroFontMedium);
-        loginButton.setBackground(new Color(0, 100, 0)); // Dark green
+        loginButton.setBackground(new Color(0, 100, 0)); 
         loginButton.setForeground(Color.WHITE);
-        loginButton.setFocusPainted(false); // No border when focused
+        loginButton.setFocusPainted(false);
         add(loginButton, gbc);
 
         gbc.gridy = 13;
         registerButton = new JButton("REGISTER");
         registerButton.setFont(retroFontMedium);
-        registerButton.setBackground(new Color(200, 100, 0)); // Dark orange
+        registerButton.setBackground(new Color(200, 100, 0));
         registerButton.setForeground(Color.WHITE);
         registerButton.setFocusPainted(false);
         add(registerButton, gbc);
 
-        // --- Feedback Label ---
+        // feedback yazisinin ayarlari
         gbc.gridy = 14;
-        gbc.weighty = 0.3; // Vertical space at the bottom
-        gbc.fill = GridBagConstraints.NONE; // No filling
+        gbc.weighty = 0.3; 
+        gbc.fill = GridBagConstraints.NONE;
         feedbackLabel = new JLabel("");
         feedbackLabel.setFont(retroFontSmall);
-        feedbackLabel.setForeground(Color.RED); // Default error color
+        feedbackLabel.setForeground(Color.RED); 
         feedbackLabel.setOpaque(true);
         feedbackLabel.setBackground(new Color(0, 0, 0, 180));
         add(feedbackLabel, gbc);
 
-        // --- Action Listeners and Document Listeners ---
+        // sifre gosterip gostermeme kosulu
         showPasswordCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (showPasswordCheckBox.isSelected()) {
-                    passwordField.setEchoChar((char) 0); // Show character
+                    passwordField.setEchoChar((char) 0); 
                 } else {
-                    passwordField.setEchoChar('*'); // Hide character
+                    passwordField.setEchoChar('*'); 
                 }
             }
         });
@@ -283,13 +282,13 @@ public class LoginPanel extends JPanel {
                 String password = new String(passwordField.getPassword()).trim();
                 String captchaInput = captchaAnswerField.getText().trim();
 
-                // Check if all fields are empty
+                // kutucuklar bossa
                 if (username.isEmpty() || password.isEmpty() || captchaInput.isEmpty()) {
                     setFeedback("All fields must be filled!", Color.RED);
                     return;
                 }
 
-                // 1. CAPTCHA control
+                // captha yanlis cevaplandiysa
                 if (!captchaInput.equalsIgnoreCase(currentCaptchaAnswer)) {
                     setFeedback("Incorrect CAPTCHA! Please try again.", Color.RED);
                     generateCaptcha(); // Generate new CAPTCHA
@@ -297,7 +296,7 @@ public class LoginPanel extends JPanel {
                     return;
                 }
 
-                // 2. Check if username exists
+                // 2. hesap yoksa
                 if (!users.containsKey(username)) {
                     setFeedback("No account found with this username.", Color.RED);
                     generateCaptcha(); // Generate new CAPTCHA on failed login attempt
@@ -305,12 +304,12 @@ public class LoginPanel extends JPanel {
                     return;
                 }
 
-                // 3. Authenticate username and password
+                // basarili giris feedbacki
                 if (authenticate(username, password)) {
                     setFeedback("Login Successful! Welcome, " + username + "!", Color.GREEN);
                     mainFrame.showGamePanel(username); // Redirect to main game
                 } else {
-                    // If username exists but password is incorrect
+                    // yanlis sifre girerse
                     setFeedback("Invalid password. Please try again.", Color.RED);
                     generateCaptcha(); // Generate new CAPTCHA on failed login
                     captchaAnswerField.setText("");
@@ -339,7 +338,7 @@ public class LoginPanel extends JPanel {
                     return;
                 }
 
-                // Successful registration
+                
                 addUser(username, password);
                 setFeedback("Registration Successful for " + username + "! You can now log in.", Color.GREEN);
                 usernameField.setText("");
@@ -350,7 +349,7 @@ public class LoginPanel extends JPanel {
             }
         });
 
-        // Listener for changes in fields
+        // sifrenin gucunu kotnrol etme kosullari
         DocumentListener fieldListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -370,7 +369,7 @@ public class LoginPanel extends JPanel {
 
             @Override
       public void changedUpdate(DocumentEvent e) {
-                // Not used for PlainDocument
+               
             }
         };
 
@@ -378,23 +377,23 @@ public class LoginPanel extends JPanel {
         passwordField.getDocument().addDocumentListener(fieldListener);
         captchaAnswerField.getDocument().addDocumentListener(fieldListener);
 
-        // Set initial button states and password strength
+      
         checkFields();
         checkPasswordStrength(new String(passwordField.getPassword()));
     }
 
-    // --- PaintComponent: Animated Title and Background ---
+    // dans eden baslikla arkaplan yukleme kosullari
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
 
-        // Turn off anti-aliasing to maintain pixel art style
+       
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 
-        // Draw background
+        
         if (backgroundGif != null) {
             g2d.drawImage(backgroundGif.getImage(), 0, 0, getWidth(), getHeight(), this);
         } else {
@@ -402,14 +401,14 @@ public class LoginPanel extends JPanel {
             g2d.fillRect(0, 0, getWidth(), getHeight());
         }
 
-        // Draw title animation
+      
         Font titleFont = retroFontTitle;
         g2d.setFont(titleFont);
 
         FontMetrics fm = g2d.getFontMetrics(titleFont);
         String currentTitleText = titleText;
 
-        // Center the title within the animatedTitleLabel's bounds
+        
         int labelX = animatedTitleLabel.getX();
         int labelY = animatedTitleLabel.getY();
         int labelWidth = animatedTitleLabel.getWidth();
@@ -427,11 +426,11 @@ public class LoginPanel extends JPanel {
             String letter = String.valueOf(currentTitleText.charAt(i));
             int letterWidth = fm.stringWidth(letter);
 
-            // Shadow
+         
             g2d.setColor(new Color(50, 50, 50));
             g2d.drawString(letter, currentX + 4, initialY + 4 + letterYOffsets[i]);
 
-            // Main color (gradient)
+          
             GradientPaint gp = new GradientPaint(
                 currentX, initialY - textAscent, new Color(255, 0, 255), // Magenta
                 currentX + letterWidth, initialY - textAscent, new Color(255, 255, 0) // Yellow
@@ -443,7 +442,7 @@ public class LoginPanel extends JPanel {
         }
     }
 
-    // --- Password Validity Check ---
+    // sifre kosullari 
     private boolean isPasswordValid(String password) {
         boolean hasMinLength = password.length() >= 8;
         boolean hasUppercase = Pattern.compile(".*[A-Z].*").matcher(password).matches();
@@ -454,7 +453,7 @@ public class LoginPanel extends JPanel {
         return hasMinLength && hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
     }
 
-    // --- Update Password Strength and Criteria Labels ---
+    // sifre gucunu ve bu kosul yazilarini degistirme isi
     private void checkPasswordStrength(String password) {
         int criteriaMet = 0;
         Color metColor = Color.GREEN;
@@ -511,28 +510,28 @@ public class LoginPanel extends JPanel {
         }
     }
 
-    // --- Title Animation Setup ---
+    // asa yukari yapan basligin hiizni ayarlama 300 yazan yer 300 milisaniyede 1 hareket etmesi fln  
     private void setupAnimation() {
         letterYOffsets = new int[titleText.length()];
         animationTimer = new Timer(300, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < letterYOffsets.length; i++) {
-                    // Random small vertical shift for each letter
-                    letterYOffsets[i] = random.nextInt(5) - 2; // Values between -2 and 2
+                  
+                    letterYOffsets[i] = random.nextInt(5) - 2; 
                 }
-                repaint(); // Redraw the panel for animation
+                repaint(); 
             }
         });
         animationTimer.start();
     }
 
-    // --- CAPTCHA Generation ---
+    // captha olusturma 
     private void generateCaptcha() {
         Random rand = new Random();
-        int num1 = rand.nextInt(10) + 1; // 1-10
-        int num2 = rand.nextInt(10) + 1; // 1-10
-        int operation = rand.nextInt(3); // 0: addition, 1: subtraction, 2: multiplication
+        int num1 = rand.nextInt(10) + 1; 
+        int num2 = rand.nextInt(10) + 1; 
+        int operation = rand.nextInt(3); // 0 gelirse toplama 1 gelirsecikarma 2 gelirse carpma oluo 
 
         String question;
         int answer;
@@ -543,7 +542,7 @@ public class LoginPanel extends JPanel {
                 answer = num1 + num2;
                 break;
             case 1:
-                // Ensure subtraction result is not negative
+                // sonuc negatif cikmasin die buyuk olan solda olmasi icin temp yontemi 
                 if (num1 < num2) {
                     int temp = num1;
                     num1 = num2;
@@ -557,40 +556,39 @@ public class LoginPanel extends JPanel {
                 answer = num1 * num2;
                 break;
             default:
-                question = ""; // Error case
+                question = ""; 
                 answer = 0;
         }
         captchaQuestionLabel.setText(question);
-        currentCaptchaAnswer = String.valueOf(answer); // Store CAPTCHA answer
+        currentCaptchaAnswer = String.valueOf(answer); 
     }
 
-    // --- Enable Buttons When Fields Are Filled ---
+    // butonlar metinler dolmadan aktif olmama zikkimi
     private void checkFields() {
         boolean usernameEmpty = usernameField.getText().trim().isEmpty();
         boolean passwordEmpty = new String(passwordField.getPassword()).trim().isEmpty();
         boolean captchaEmpty = captchaAnswerField.getText().trim().isEmpty();
         boolean passwordMeetsAllCriteria = isPasswordValid(new String(passwordField.getPassword()));
 
-        // Login button: all fields must be filled
+        
         loginButton.setEnabled(!usernameEmpty && !passwordEmpty && !captchaEmpty);
 
-        // Register button: username and password must be filled, and password must meet criteria
+      
         registerButton.setEnabled(!usernameEmpty && !passwordEmpty && passwordMeetsAllCriteria);
 
-        // Clear feedback message if empty (to avoid overwriting specific error messages)
+        
         if (feedbackLabel.getText().isEmpty()) {
-            setFeedback("", Color.RED); // Default to empty and red (can be another color if needed)
+            setFeedback("", Color.RED); 
         }
     }
 
-    // --- User Authentication ---
+    // bura degiscek muhtemelen ama kullanici var mi yok mu kotnrol edio
     private boolean authenticate(String username, String password) {
-        // This method assumes the username has already been checked for existence.
-        // It only validates the password for an existing user.
+      
         return users.get(username).equals(password);
     }
 
-    // --- Add New User ---
+    // yeni kullanici ekleme kismi
     public void addUser(String username, String password) {
         if (!users.containsKey(username)) {
             users.put(username, password);
@@ -600,17 +598,17 @@ public class LoginPanel extends JPanel {
         }
     }
 
-    // --- Reset Login Fields ---
+    // metinleri sifirlama 
     public void resetFields() {
         usernameField.setText("");
         passwordField.setText("");
         captchaAnswerField.setText("");
         generateCaptcha();
-        checkPasswordStrength(""); // Reset password strength display
-        setFeedback("", Color.RED); // Clear feedback
+        checkPasswordStrength(""); 
+        setFeedback("", Color.RED); 
     }
 
-    // --- Set Feedback Message ---
+    // feedback mesajlarini belirlio
     private void setFeedback(String message, Color color) {
         feedbackLabel.setText(message);
         feedbackLabel.setForeground(color);

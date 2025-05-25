@@ -10,21 +10,20 @@ public class MainFrame extends JFrame {
     private LoginPanel loginPanel;
     private GamePanel gamePanel;
 
-    // Login ekranı için tercih edilen boyutlar
+    
     private static final int LOGIN_WIDTH = 800;
     private static final int LOGIN_HEIGHT = 700;
 
-    // Oyun ekranı için tercih edilen boyutlar (GamePanel'in kendi boyutlarına + çerçeve payı)
-    // GamePanel'in yeni boyutları SCREEN_WIDTH=800, SCREEN_HEIGHT=700
+    
     private static final int GAME_AREA_WIDTH = GamePanel.SCREEN_WIDTH;
     private static final int GAME_AREA_HEIGHT = GamePanel.SCREEN_HEIGHT;
-    private static final int FRAME_PADDING_HEIGHT = 80; // Başlık çubuğu ve pencere çerçevesi için tahmini pay
+    private static final int FRAME_PADDING_HEIGHT = 80; 
 
     public MainFrame() {
         setTitle("Retro Arcade Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        setLocationRelativeTo(null); // Ekranın ortasında başlat
+        setLocationRelativeTo(null); 
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -41,9 +40,9 @@ public class MainFrame extends JFrame {
     }
 
     public void showLoginPanel() {
-        // Login ekranına geçerken pencere boyutunu ayarla
+       
         setSize(LOGIN_WIDTH, LOGIN_HEIGHT);
-        setLocationRelativeTo(null); // Yeniden ortala
+        setLocationRelativeTo(null); 
 
         cardLayout.show(mainPanel, "Login");
         loginPanel.resetFields();
@@ -52,9 +51,9 @@ public class MainFrame extends JFrame {
     }
 
     public void showGamePanel(String username) {
-        // Oyun ekranına geçerken pencere boyutunu ayarla
+       
         setSize(GAME_AREA_WIDTH, GAME_AREA_HEIGHT + FRAME_PADDING_HEIGHT);
-        setLocationRelativeTo(null); // Yeniden ortala
+        setLocationRelativeTo(null); 
 
         gamePanel.setWelcomeText(username);
         gamePanel.startGame();

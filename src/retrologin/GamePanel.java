@@ -12,32 +12,27 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener {
 
-    // --- Oyun Ekranının TOPLAM Boyutları ---
     static final int SCREEN_WIDTH = 800;
     static final int PLAYABLE_AREA_WIDTH = 600;
-    static final int PLAYABLE_AREA_HEIGHT = 500; // Oynanabilir alanın yüksekliği
+    static final int PLAYABLE_AREA_HEIGHT = 500;
 
     static final int UNIT_SIZE = 25;
 
-    // Üstteki bilgi çubuğu için yükseklik
-    static final int TOP_INFO_PANEL_HEIGHT = 60; // Yeni, daha kısa yükseklik
+    static final int TOP_INFO_PANEL_HEIGHT = 60;
 
-    // Oynanabilir Alanın Ofsetleri (Y koordinatı)
+    // oyun alaninin kordinat zimbirtilari
     static final int X_OFFSET = 0;
-    static final int Y_OFFSET = TOP_INFO_PANEL_HEIGHT; // Oyun alanı, bilgi panelinin hemen altında başlayacak
+    static final int Y_OFFSET = TOP_INFO_PANEL_HEIGHT;
 
-    // TOPLAM EKRAN YÜKSEKLİĞİ: Üst bilgi paneli + Oynanabilir alan yüksekliği
-    // JFrame'in kenarlıkları nedeniyle biraz daha fazla yer bırakabiliriz
     static final int SCREEN_HEIGHT = TOP_INFO_PANEL_HEIGHT + PLAYABLE_AREA_HEIGHT;
 
 
-    // Sağ taraftaki skor paneli için genişlik
     static final int HIGH_SCORE_PANEL_WIDTH = 200;
 
 
     static final int GAME_UNITS = (PLAYABLE_AREA_WIDTH * PLAYABLE_AREA_HEIGHT) / (UNIT_SIZE * UNIT_SIZE);
 
-    static final int DELAY = 90;
+    static final int DELAY = 90; // yilanin hiz ayari milisaniye basina bisiler
 
     final int x[] = new int[GAME_UNITS];
     final int inty[] = new int[GAME_UNITS];
@@ -50,9 +45,8 @@ public class GamePanel extends JPanel implements ActionListener {
     boolean running = false;
     boolean gameOver = false;
     boolean paused = false;
-    // Bu bayrağı yalnızca ilk açılış için kullanacağız
     boolean initialWaitingToStart = true;
-    boolean waitingToStartForCurrentGame = true; // Her yeni oyun başlangıcı için
+    boolean waitingToStartForCurrentGame = true;
 
     Timer timer;
     Random random;
@@ -68,24 +62,23 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private ArrayList<ScoreEntry> highScores = new ArrayList<>();
 
-    // --- RETRO RENK PALETİ TANIMLAMALARI ---
-    private static final Color COLOR_BACKGROUND_DARK = new Color(15, 15, 30); // Çok koyu mavi/mor
-    private static final Color COLOR_PLAYABLE_AREA_BG = new Color(20, 20, 50); // Koyu Mavi/Mor tonu (Retro Arka Plan)
-    private static final Color COLOR_GRID_LINES = new Color(30, 30, 80); // Daha koyu ve belirgin ızgara (retro)
-    private static final Color COLOR_TOP_PANEL_BG = new Color(25, 25, 40); // Üst panelin arka planı
-    private static final Color COLOR_HIGH_SCORE_PANEL_BG = new Color(10, 10, 20); // Yüksek skor panelinin arka planı
-    private static final Color COLOR_SEPARATOR_LINES = new Color(70, 70, 100); // Ayırıcı çizgiler
+    private static final Color COLOR_BACKGROUND_DARK = new Color(15, 15, 30);
+    private static final Color COLOR_PLAYABLE_AREA_BG = new Color(20, 20, 50);
+    private static final Color COLOR_GRID_LINES = new Color(30, 30, 80);
+    private static final Color COLOR_TOP_PANEL_BG = new Color(25, 25, 40);
+    private static final Color COLOR_HIGH_SCORE_PANEL_BG = new Color(10, 10, 20);
+    private static final Color COLOR_SEPARATOR_LINES = new Color(70, 70, 100);
 
-    private static final Color COLOR_SNAKE_HEAD = new Color(0, 255, 0); // Parlak Yeşil (Yılan Başı)
-    private static final Color COLOR_SNAKE_BODY = new Color(0, 200, 200); // Daha açık Camgöbeği (Yılan Gövdesi)
-    private static final Color COLOR_APPLE = new Color(255, 69, 0); // Parlak Turuncu (Retro Elma)
+    private static final Color COLOR_SNAKE_HEAD = new Color(0, 255, 0);
+    private static final Color COLOR_SNAKE_BODY = new Color(0, 200, 200);
+    private static final Color COLOR_APPLE = new Color(255, 69, 0);
 
-    private static final Color COLOR_TEXT_PLAYER_SCORE = new Color(0, 255, 255); // Canlı Camgöbeği
-    private static final Color COLOR_TEXT_HIGH_SCORES_TITLE = new Color(255, 255, 0); // Parlak Sarı
-    private static final Color COLOR_TEXT_GAME_OVER = new Color(255, 0, 0); // Parlak Kırmızı
-    private static final Color COLOR_TEXT_PAUSED = new Color(255, 255, 0); // Parlak Sarı
-    private static final Color COLOR_TEXT_WELCOME_TITLE = new Color(0, 255, 0); // Parlak Yeşil (Retro Snake Başlığı)
-    private static final Color COLOR_TEXT_WELCOME_PRESS_KEY = new Color(200, 200, 200); // Açık gri (Press Any Key)
+    private static final Color COLOR_TEXT_PLAYER_SCORE = new Color(0, 255, 255);
+    private static final Color COLOR_TEXT_HIGH_SCORES_TITLE = new Color(255, 255, 0);
+    private static final Color COLOR_TEXT_GAME_OVER = new Color(255, 0, 0);
+    private static final Color COLOR_TEXT_PAUSED = new Color(255, 255, 0);
+    private static final Color COLOR_TEXT_WELCOME_TITLE = new Color(0, 255, 0);
+    private static final Color COLOR_TEXT_WELCOME_PRESS_KEY = new Color(200, 200, 200);
 
     private static class ScoreEntry implements Comparable<ScoreEntry> {
         String username;
@@ -105,10 +98,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public GamePanel(MainFrame mainFrame) {
         random = new Random();
         this.mainFrame = mainFrame;
-        // Panelin tercih edilen boyutunu tam olarak hesaplanan SCREEN_WIDTH ve SCREEN_HEIGHT olarak ayarla
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        // Genel arka planı daha koyu bir siyaha yakın renk yapalım
-        this.setBackground(COLOR_BACKGROUND_DARK); // Retro için koyu gri/siyah
+        this.setBackground(COLOR_BACKGROUND_DARK);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
 
@@ -121,21 +112,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void setWelcomeText(String username) {
         this.username = username;
-        // Kullanıcı adı ayarlandığında, ilk başlangıç ekranını göster
         initialWaitingToStart = true;
         waitingToStartForCurrentGame = true;
-        startGame(); // startGame çağrısı zaten başlangıç durumuna getiriyor
+        startGame();
     }
 
     public void startGame() {
         applesEaten = 0;
-        bodyParts = 6;
+        bodyParts = 3;
         direction = 'R';
         running = false;
         gameOver = false;
         paused = false;
-        // Sadece ilk açılışta veya 'R' ile yeniden başlatıldığında bekleme ekranını göster
-        if (!initialWaitingToStart) { // Eğer ilk açılış değilse, oyun hemen başlasın
+        if (!initialWaitingToStart) { // ilk kez acilmiosa oyun ekrani direkt baslasin oyun die
             waitingToStartForCurrentGame = false;
             running = true;
         } else {
@@ -156,14 +145,13 @@ public class GamePanel extends JPanel implements ActionListener {
             timer.stop();
         }
         timer = new Timer(DELAY, this);
-        if (running) { // Eğer oyun hemen başlayacaksa timer'ı çalıştır
+        if (running) {
             timer.start();
         }
         repaint();
     }
 
     private void resumeGame() {
-        // initialWaitingToStart'ı false yap, böylece bir daha bu mesajı görmeyiz
         initialWaitingToStart = false;
         waitingToStartForCurrentGame = false;
         running = true;
@@ -178,42 +166,35 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void draw(Graphics g) {
-        // --- Üstteki Bilgi Paneli (Player ve Score) ---
         g.setColor(COLOR_TOP_PANEL_BG);
         g.fillRect(0, 0, SCREEN_WIDTH, TOP_INFO_PANEL_HEIGHT);
 
-        // Player ve Mevcut Skor yazıları
-        g.setColor(COLOR_TEXT_PLAYER_SCORE); // Canlı Camgöbeği rengi
+        g.setColor(COLOR_TEXT_PLAYER_SCORE);
         g.setFont(retroFontMedium);
         String playerText = "PLAYER: " + (username != null ? username.toUpperCase() : "GUEST");
         String scoreText = "SCORE: " + applesEaten;
 
         FontMetrics playerMetrics = getFontMetrics(retroFontMedium);
-        // Yazıların dikeyde ortalanması
         int textY = TOP_INFO_PANEL_HEIGHT / 2 + playerMetrics.getAscent() / 2;
 
         g.drawString(playerText, 20, textY);
         g.drawString(scoreText, PLAYABLE_AREA_WIDTH - playerMetrics.stringWidth(scoreText) - 20, textY);
 
-        // --- Yüksek Skorlar Paneli (Ekranın en sağında) ---
         g.setColor(COLOR_HIGH_SCORE_PANEL_BG);
         g.fillRect(SCREEN_WIDTH - HIGH_SCORE_PANEL_WIDTH, 0, HIGH_SCORE_PANEL_WIDTH, SCREEN_HEIGHT);
 
-        // Paneller arası ince çizgiler (Daha belirgin hale getirildi)
-        g.setColor(COLOR_SEPARATOR_LINES); // Açık gri bir çizgi
-        g.fillRect(PLAYABLE_AREA_WIDTH, 0, 2, SCREEN_HEIGHT); // Yüksek skor paneli ile oyun alanı arası
-        g.fillRect(0, TOP_INFO_PANEL_HEIGHT, SCREEN_WIDTH - HIGH_SCORE_PANEL_WIDTH, 2); // Üst panel ile oyun alanı arası
+        g.setColor(COLOR_SEPARATOR_LINES);
+        g.fillRect(PLAYABLE_AREA_WIDTH, 0, 2, SCREEN_HEIGHT);
+        g.fillRect(0, TOP_INFO_PANEL_HEIGHT, SCREEN_WIDTH - HIGH_SCORE_PANEL_WIDTH, 2);
 
-        // Oyun alanının arka planını her zaman çiz
         g.setColor(COLOR_PLAYABLE_AREA_BG);
         g.fillRect(X_OFFSET, Y_OFFSET, PLAYABLE_AREA_WIDTH, PLAYABLE_AREA_HEIGHT);
 
 
-        if (initialWaitingToStart) { // Yalnızca ilk açılışta bekleme ekranını göster
+        if (initialWaitingToStart) { // bi kerelik bekleme ekrani olcak baslaamk icin tusa basin yazsiis yani
             drawWaitingToStartScreen(g);
         } else if (running) {
-            // Izgara Çizgilerini Sadece Oynanabilir Alan İçinde Çiz
-            g.setColor(COLOR_GRID_LINES); // Daha koyu ve belirgin ızgara (retro)
+            g.setColor(COLOR_GRID_LINES);
             for (int i = 0; i <= PLAYABLE_AREA_WIDTH / UNIT_SIZE; i++) {
                 g.drawLine(X_OFFSET + i * UNIT_SIZE, Y_OFFSET, X_OFFSET + i * UNIT_SIZE, Y_OFFSET + PLAYABLE_AREA_HEIGHT);
             }
@@ -221,17 +202,15 @@ public class GamePanel extends JPanel implements ActionListener {
                 g.drawLine(X_OFFSET, Y_OFFSET + i * UNIT_SIZE, X_OFFSET + PLAYABLE_AREA_WIDTH, Y_OFFSET + i * UNIT_SIZE);
             }
 
-            // Elmayı çiz
-            g.setColor(COLOR_APPLE); // Parlak Turuncu (Retro Elma)
+            g.setColor(COLOR_APPLE);
             g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 
-            // Yılanı çiz
             for (int i = 0; i < bodyParts; i++) {
                 if (i == 0) {
-                    g.setColor(COLOR_SNAKE_HEAD); // Parlak Yeşil (Yılan Başı)
+                    g.setColor(COLOR_SNAKE_HEAD);
                     g.fillRect(x[i], inty[i], UNIT_SIZE, UNIT_SIZE);
                 } else {
-                    g.setColor(COLOR_SNAKE_BODY); // Daha açık Camgöbeği (Yılan Gövdesi)
+                    g.setColor(COLOR_SNAKE_BODY);
                     g.fillRect(x[i], inty[i], UNIT_SIZE, UNIT_SIZE);
                 }
             }
@@ -241,15 +220,14 @@ public class GamePanel extends JPanel implements ActionListener {
             drawPausedScreen(g);
         }
 
-        // Yüksek skor panelini çiz (en sağda)
+        // skor panelini siralayan ve cizen kodlar
         drawHighScorePanel(g);
     }
 
-    // Yüksek skor panelini çizen metod
     private void drawHighScorePanel(Graphics g) {
         int panelX = SCREEN_WIDTH - HIGH_SCORE_PANEL_WIDTH;
 
-        g.setColor(COLOR_TEXT_HIGH_SCORES_TITLE); // Parlak Sarı
+        g.setColor(COLOR_TEXT_HIGH_SCORES_TITLE);
         g.setFont(retroFontSmall);
         String highScoresTitle = "HIGH SCORES";
         int highScoresTitleWidth = getFontMetrics(g.getFont()).stringWidth(highScoresTitle);
@@ -257,7 +235,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
         int scoreYOffset = g.getFont().getSize() + 40;
         int displayCount = 0;
-        g.setColor(COLOR_TEXT_PLAYER_SCORE); // Camgöbeği rengi (skor listesi için)
+        g.setColor(COLOR_TEXT_PLAYER_SCORE);
         for (ScoreEntry entry : highScores) {
             if (displayCount >= 10) break;
             String scoreLine = (displayCount + 1) + ". " + entry.username.toUpperCase() + ": " + entry.score;
@@ -269,31 +247,29 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void drawWaitingToStartScreen(Graphics g) {
-        // Oynanabilir alanın merkezini hesapla
+        //
         int playableAreaCenterX = X_OFFSET + PLAYABLE_AREA_WIDTH / 2;
         int playableAreaCenterY = Y_OFFSET + PLAYABLE_AREA_HEIGHT / 2;
 
-        g.setColor(COLOR_TEXT_WELCOME_TITLE); // Parlak Yeşil
+        g.setColor(COLOR_TEXT_WELCOME_TITLE);
         g.setFont(retroFontTitle);
         FontMetrics metricsTitle = getFontMetrics(g.getFont());
         String gameTitle = "RETRO SNAKE";
-        // Oyun başlığını oynanabilir alanın merkezine hizala
         int titleX = playableAreaCenterX - metricsTitle.stringWidth(gameTitle) / 2;
         int titleY = playableAreaCenterY - metricsTitle.getAscent() / 2 - 30;
         g.drawString(gameTitle, titleX, titleY);
 
-        g.setColor(COLOR_TEXT_WELCOME_PRESS_KEY); // Açık Gri
+        g.setColor(COLOR_TEXT_WELCOME_PRESS_KEY);
         g.setFont(retroFontLarge);
         FontMetrics metrics = getFontMetrics(g.getFont());
         String pressKeyText = "Press Any Key to Start";
-        // "Press Any Key to Start" mesajını oyun başlığının altına ortala
         int pressKeyX = playableAreaCenterX - metrics.stringWidth(pressKeyText) / 2;
         int pressKeyY = titleY + metricsTitle.getHeight() + 20;
         g.drawString(pressKeyText, pressKeyX, pressKeyY);
     }
 
     public void newApple() {
-        // Elmanın x ve y koordinatlarını oynanabilir alan içinde rastgele belirle
+        // elmayi rasgele olustursun die
         appleX = X_OFFSET + random.nextInt(PLAYABLE_AREA_WIDTH / UNIT_SIZE) * UNIT_SIZE;
         appleY = Y_OFFSET + random.nextInt(PLAYABLE_AREA_HEIGHT / UNIT_SIZE) * UNIT_SIZE;
     }
@@ -335,7 +311,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 gameOver = true;
             }
         }
-        // Duvarlara çarpma kontrolü, oynanabilir alanın sınırları içinde kalmasını sağlar
+        // duvara carparsa yani oyun sinirlarini gecerse oyun bitsin kosulu
         if (x[0] < X_OFFSET || x[0] >= X_OFFSET + PLAYABLE_AREA_WIDTH ||
             inty[0] < Y_OFFSET || inty[0] >= Y_OFFSET + PLAYABLE_AREA_HEIGHT) {
             running = false;
@@ -352,57 +328,51 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void gameOverScreen(Graphics g) {
-        // Oynanabilir alanın merkezini hesapla
+        //
         int playableAreaCenterX = X_OFFSET + PLAYABLE_AREA_WIDTH / 2;
         int playableAreaCenterY = Y_OFFSET + PLAYABLE_AREA_HEIGHT / 2;
 
-        g.setColor(COLOR_TEXT_GAME_OVER); // Parlak Kırmızı
+        g.setColor(COLOR_TEXT_GAME_OVER);
         g.setFont(retroFontLarge);
         FontMetrics metrics1 = getFontMetrics(g.getFont());
         String gameOverText = "GAME OVER!";
-           
-        // "GAME OVER!" yazısını oynanabilir alanın merkezine hizala
         int goTextX = playableAreaCenterX - metrics1.stringWidth(gameOverText) / 2;
-        int goTextY = playableAreaCenterY - metrics1.getAscent() / 2 - 30; // Dikey konumu ayarla
+        int goTextY = playableAreaCenterY - metrics1.getAscent() / 2 - 30;
         g.drawString(gameOverText, goTextX, goTextY);
 
-        g.setColor(COLOR_TEXT_PLAYER_SCORE); // Camgöbeği rengi (skor için)
+        g.setColor(COLOR_TEXT_PLAYER_SCORE);
         g.setFont(retroFontMedium);
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         String scoreText = "Score: " + applesEaten;
-        // Skor yazısını oynanabilir alanın merkezine hizala
         int scoreTextX = playableAreaCenterX - metrics2.stringWidth(scoreText) / 2;
         int scoreTextY = goTextY + metrics1.getHeight() + 10;
         g.drawString(scoreText, scoreTextX, scoreTextY);
 
-        g.setColor(COLOR_TEXT_HIGH_SCORES_TITLE); // Parlak Sarı
+        g.setColor(COLOR_TEXT_HIGH_SCORES_TITLE);
         g.setFont(retroFontSmall);
         FontMetrics metrics3 = getFontMetrics(g.getFont());
         String restartText = "Press 'R' to Restart or 'ESC' to Logout";
-        // Yeniden başlatma/Çıkış yazısını oynanabilir alanın merkezine hizala
         int restartTextX = playableAreaCenterX - metrics3.stringWidth(restartText) / 2;
         int restartTextY = scoreTextY + metrics2.getHeight() + 10;
         g.drawString(restartText, restartTextX, restartTextY);
     }
 
     public void drawPausedScreen(Graphics g) {
-        // Oynanabilir alanın merkezini hesapla
+        //
         int playableAreaCenterX = X_OFFSET + PLAYABLE_AREA_WIDTH / 2;
         int playableAreaCenterY = Y_OFFSET + PLAYABLE_AREA_HEIGHT / 2;
 
-        g.setColor(COLOR_TEXT_PAUSED); // Parlak Sarı
+        g.setColor(COLOR_TEXT_PAUSED);
         g.setFont(retroFontGameOver);
         FontMetrics metrics = getFontMetrics(g.getFont());
         String pauseText = "PAUSED";
-        // "PAUSED" yazısını oynanabilir alanın merkezine hizala
         int pauseTextX = playableAreaCenterX - metrics.stringWidth(pauseText) / 2;
         int pauseTextY = playableAreaCenterY - metrics.getAscent() / 2;
         g.drawString(pauseText, pauseTextX, pauseTextY);
 
-        g.setColor(COLOR_TEXT_PLAYER_SCORE); // Camgöbeği rengi
+        g.setColor(COLOR_TEXT_PLAYER_SCORE);
         g.setFont(retroFontMedium);
         String resumeText = "Press 'P' to Resume";
-        // Devam etme yazısını oynanabilir alanın merkezine hizala
         int resumeTextX = playableAreaCenterX - getFontMetrics(g.getFont()).stringWidth(resumeText) / 2;
         int resumeTextY = pauseTextY + metrics.getHeight() + 20;
         g.drawString(resumeText, resumeTextX, resumeTextY);
@@ -421,18 +391,17 @@ public class GamePanel extends JPanel implements ActionListener {
     public class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            // Sadece ilk açılışta herhangi bir tuşa basılmasını bekliyoruz
+            // bi tusa basip oyunu baslatma komutlari
             if (initialWaitingToStart) {
-                resumeGame(); // İlk oyunu başlat
+                resumeGame();
                 return;
             }
 
-            // Eğer oyun bittiyse veya duraklatıldıysa veya ilk başlangıç ekranı değilse tuşları dinle
-            if (gameOver || paused || !running) { // !running durumu restart ve logout için
+            if (gameOver || paused || !running) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_R:
                         if (gameOver) {
-                            initialWaitingToStart = false; // Yeniden başlatmada ilk başlangıç ekranını atla
+                            initialWaitingToStart = false;
                             startGame();
                         }
                         break;
@@ -441,12 +410,12 @@ public class GamePanel extends JPanel implements ActionListener {
                             if (timer != null) {
                                 timer.stop();
                             }
-                            initialWaitingToStart = true; // Logout yaparken tekrar ilk başlangıç ekranına dön
-                            mainFrame.showLoginPanel(); // MainFrame'deki login panelini göster
+                            initialWaitingToStart = true;
+                            mainFrame.showLoginPanel();
                         }
                         break;
                     case KeyEvent.VK_P:
-                        if (!gameOver && !waitingToStartForCurrentGame) { // Oyun bitmediyse ve başlamadıysa
+                        if (!gameOver && !waitingToStartForCurrentGame) {
                             paused = !paused;
                             if (paused) {
                                 timer.stop();
@@ -456,10 +425,9 @@ public class GamePanel extends JPanel implements ActionListener {
                         }
                         break;
                 }
-                return; // Tuş olayını işledikten sonra çık
+                return;
             }
-            
-            // Oyun çalışıyorsa yılan hareketini kontrol et
+            // yilanin kotnroller
             if (running && !paused) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
